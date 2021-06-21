@@ -13,6 +13,7 @@
 
 extern struct dhara_map *flash_map_obj;
 
+int msc_insert = 1;
 
 void tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16], uint8_t product_rev[4]) {
     (void)lun;
@@ -30,10 +31,15 @@ void tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16
 // return true allowing host to read/write this LUN e.g SD card inserted
 bool tud_msc_test_unit_ready_cb(uint8_t lun) {
     (void)lun;
+    //printf("MSC TST READY\n");
     if(flash_map_obj){
-        return true;
+        if(msc_insert){
+            return true;
+        }else{
+            return false;
+        }
     }
-
+    
     return false;
 }
 

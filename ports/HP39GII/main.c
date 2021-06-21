@@ -86,9 +86,9 @@ void REPL_main(void) {
     REPL_rx_buf_queue = xQueueCreate(1024, sizeof(char));
     REPL_tx_buf_queue = xQueueCreate(1024, sizeof(char));
 
-    heap = malloc(16 * 1024);
+    heap = malloc(32 * 1024);
     mp_stack_ctrl_init();
-    gc_init(heap, heap + 16 * 1024);
+    gc_init(heap, heap + 32 * 1024);
     mp_init();
     mp_obj_list_init(MP_OBJ_TO_PTR(mp_sys_path), 0);
     mp_obj_list_init(MP_OBJ_TO_PTR(mp_sys_argv), 0);
@@ -115,15 +115,19 @@ void gc_collect(void) {
     gc_collect_end();
 }
 
+/*
 // There is no filesystem so stat'ing returns nothing.
 mp_import_stat_t mp_import_stat(const char *path) {
     return MP_IMPORT_STAT_NO_EXIST;
 }
+*/
 
 // There is no filesystem so opening a file raises an exception.
+/*
 mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
     mp_raise_OSError(MP_ENOENT);
 }
+*/
 
 // Receive single character, blocking until one is available.
 int mp_hal_stdin_rx_chr(void) {

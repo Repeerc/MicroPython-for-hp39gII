@@ -33,7 +33,7 @@
 #include "regsuartdbg.h"
 #include "regsclkctrl.h"
 #include "regspower.h"
-
+#include "regsdigctl.h"
 
 
 #include "mmu.h"
@@ -113,6 +113,7 @@ void printTaskList() {
     printf("total non-inuse space: %d\r\n", mallocInfo.fordblks);
     printf("top-most, releasable (via malloc_trim) space: %d\r\n", mallocInfo.keepcost);
     printf("剩余内存：%ld Bytes\r\n",((uint32_t)&_heap_stop - (uint32_t)&_heap_start) - (uint32_t)mallocInfo.uordblks);
+    printf("熵：%d\n",HW_DIGCTL_ENTROPY_RD());
     vPortFree(tasklist_buf);
 }
 
@@ -128,7 +129,7 @@ void vTaskMPythonREPL(void *pvParameters) {
 void vTask2(void *pvParameters) {
 
     for (;;) {
-        vTaskDelay(10000);
+        vTaskDelay(12000);
         printTaskList();
        
     }
@@ -147,14 +148,14 @@ void vBootstrap_task(void *pvParameters){
     
     usb_task_init();
     
-    xTaskCreate(vTaskMPythonREPL, "MPythonREPL", configMINIMAL_STACK_SIZE*8, NULL, 3, NULL);
+    xTaskCreate(vTaskMPythonREPL, "MPythonREPL", configMINIMAL_STACK_SIZE*4, NULL, 3, NULL);
     
     xTaskCreate(vTask2, "Dump", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
 
-
+/*
     while(1){
         vTaskDelay(1000);
-    }
+    }*/
     vTaskDelete(NULL);
 }
 
