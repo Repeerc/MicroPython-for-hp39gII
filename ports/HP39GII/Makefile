@@ -49,6 +49,7 @@ SRC_C += ./TinyUSB/class/cdc/cdc_device.c ./TinyUSB/class/msc/msc_device.c
 SRC_C += ./flash.c
 
 SRC_C += ./mphalport.c
+SRC_C += ./mpthreadport.c
 
 #SRC_C += $(wildcard ./*.c )
 
@@ -79,6 +80,7 @@ SRC_MODS += $(addprefix ./modules/,\
         machine.c \
 		machine_flash.c \
 		moduos.c \
+		modutime.c \
         )
 		
 SRC_EXTMOD += $(addprefix extmod/,\
@@ -87,6 +89,7 @@ SRC_EXTMOD += $(addprefix extmod/,\
 		moductypes.c \
 		moduasyncio.c \
 		modurandom.c \
+		utime_mphal.c \
         )
 
 

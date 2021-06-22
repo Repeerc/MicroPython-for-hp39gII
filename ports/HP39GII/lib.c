@@ -36,6 +36,8 @@
 
 #include "uart_debug.h"
 
+#include "regsrtc.h"
+
 extern uint32_t _heap_start, _heap_stop;
 uint8_t *currentHeapEnd = (uint8_t *)&_heap_start;
 
@@ -92,8 +94,11 @@ int _open(const char *file, int flags, int mode)
 	return -1;
 }
 
-void sleep(int ms){
+int gettimeofday(struct timeval*tv, struct timezone *tz){
+    tv->tv_sec = HW_RTC_SECONDS_RD();
+    tv->tv_usec = HW_RTC_MILLISECONDS_RD();
+    
+    return 0;
 
 }
-
 

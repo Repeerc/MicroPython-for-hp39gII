@@ -302,7 +302,7 @@
 #ifdef MICROPY_FATFS_NORTC
 #define FF_FS_NORTC (MICROPY_FATFS_NORTC)
 #else
-#define FF_FS_NORTC 1
+#define FF_FS_NORTC 0
 #endif
 #define FF_NORTC_MON    1
 #define FF_NORTC_MDAY   1

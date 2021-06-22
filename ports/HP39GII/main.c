@@ -35,6 +35,8 @@
 #include "py/stackctrl.h"
 #include "py/gc.h"
 
+#include "lib/mp-readline/readline.h"
+
 #include "lib/utils/pyexec.h"
 #include "lib/utils/gchelper.h"
 
@@ -42,7 +44,7 @@
 #include "task.h"
 #include "queue.h"
 
-
+#include "mpthreadport.h"
 /*
 static const char *demo_single_input =
     "print('hello world!', list(x + 1 for x in range(10)), end='eol\\n')";
@@ -86,12 +88,21 @@ void REPL_main(void) {
     REPL_rx_buf_queue = xQueueCreate(1024, sizeof(char));
     REPL_tx_buf_queue = xQueueCreate(1024, sizeof(char));
 
+    #if MICROPY_PY_THREAD
+        mp_thread_init(malloc(16 * 1024), 16 *1024/4);
+    #endif
+
     heap = malloc(32 * 1024);
     mp_stack_ctrl_init();
     gc_init(heap, heap + 32 * 1024);
     mp_init();
+    
     mp_obj_list_init(MP_OBJ_TO_PTR(mp_sys_path), 0);
+    mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
+    mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR('/'));
     mp_obj_list_init(MP_OBJ_TO_PTR(mp_sys_argv), 0);
+
+    readline_init0();
 
     for ( ; ;) {
 

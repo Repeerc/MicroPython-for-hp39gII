@@ -3,7 +3,8 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2013, 2014, 2016 Damien P. George
+ * Copyright (c) 2016 Damien P. George on behalf of Pycom Ltd
+ * Copyright (c) 2017 Pycom Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +25,21 @@
  * THE SOFTWARE.
  */
 
-#include "py/obj.h"
-#include "lib/timeutils/timeutils.h"
-#include "lib/oofatfs/ff.h"
+#ifndef MICROPY_INCLUDED_ESP32_MPTHREADPORT_H
+#define MICROPY_INCLUDED_ESP32_MPTHREADPORT_H
 
-#include "regsrtc.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+#include "queue.h"
 
-DWORD get_fattime(void) {
+typedef struct _mp_thread_mutex_t {
+    SemaphoreHandle_t handle;
+    StaticSemaphore_t buffer;
+} mp_thread_mutex_t;
 
-	
-    //uint32_t secs = (uint32_t)(pyb_rtc_get_us_since_epoch() / 1000000);
-	uint32_t secs = HW_RTC_SECONDS_RD();
-    timeutils_struct_time_t tm;
-    timeutils_seconds_since_epoch_to_struct_time(secs, &tm);
+void mp_thread_init(void *stack, uint32_t stack_len);
+void mp_thread_gc_others(void);
+void mp_thread_deinit(void);
 
-    return ((DWORD)(tm.tm_year - 1980) << 25) | ((DWORD)tm.tm_mon << 21) | ((DWORD)tm.tm_mday << 16) |
-           ((DWORD)tm.tm_hour << 11) | ((DWORD)tm.tm_min << 5) | ((DWORD)tm.tm_sec >> 1);
-}
+#endif // MICROPY_INCLUDED_ESP32_MPTHREADPORT_H

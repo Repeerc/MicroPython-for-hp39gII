@@ -6,10 +6,19 @@
 #include "extmod/vfs_fat.h"
 #include "map.h"
 
+#include "regsdigctl.h"
+#include "regsrtc.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "math.h"
+
 extern struct dhara_map *flash_map_obj;
 
 int mp_vfs_blockdev_read(mp_vfs_blockdev_t *self, size_t block_num, size_t num_blocks, uint8_t *buf){
-    printf("VFS RD:%d, bks:%d\n",block_num, num_blocks);
+    //printf("VFS RD:%d, bks:%d\n",block_num, num_blocks);
+
     dhara_error_t err;
 
     for(int i=0; i<num_blocks; i++){
@@ -77,6 +86,33 @@ mp_obj_t mp_vfs_blockdev_ioctl(mp_vfs_blockdev_t *self, uintptr_t cmd, uintptr_t
 
 void mp_vfs_blockdev_init(mp_vfs_blockdev_t *self, mp_obj_t bdev){
     
-    printf("BDEV INIT\n");
+    //printf("BDEV INIT\n");
 
+}
+
+
+uint64_t mp_hal_time_ns(){
+
+    return(HW_RTC_MILLISECONDS_RD()*1000);
+
+}
+
+mp_uint_t mp_hal_ticks_us(){
+    return HW_RTC_MILLISECONDS_RD();
+}
+
+void mp_hal_delay_ms(mp_uint_t ms){
+    vTaskDelay(ms);
+}
+
+void mp_hal_delay_us(mp_uint_t us){
+    int start = HW_DIGCTL_MICROSECONDS_RD();
+    while (fabs(HW_DIGCTL_MICROSECONDS_RD() - start) < us)
+        ;
+    
+
+}
+
+mp_uint_t mp_hal_ticks_cpu(){
+    return HW_DIGCTL_MICROSECONDS_RD();
 }

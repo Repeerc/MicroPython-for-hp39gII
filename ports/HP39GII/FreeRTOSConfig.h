@@ -51,6 +51,8 @@
 #define configMAX_PRIORITIES		( 5 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 400 )
 
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS 3
+
 #define configMAX_TASK_NAME_LEN		( 20 )
 #define configUSE_MUTEXES                       1
 #define configUSE_RECURSIVE_MUTEXES             1
